@@ -5,7 +5,7 @@ const homeController = require('./home')
 
 
 const app = express()
-const PORT = 3001
+const PORT = 4001
 
 nunjucks.configure('home', {
     autoescape: true,
