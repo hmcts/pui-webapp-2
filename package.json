@@ -2,7 +2,7 @@
 	"name": "lib",
 	"version": "0.0.1",
 	"scripts": {
-		"start": "cd  src  && node start.js",
+		"start": "node start.js",
 		"nuke": "rm -rf dist node_modules",
 		"postinstall": "echo post install"
 	},
