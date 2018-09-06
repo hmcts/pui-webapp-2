@@ -7,17 +7,15 @@ const homeController = require('./home')
 const app = express()
 const PORT = 3001
 
-nunjucks.configure('home', {
+nunjucks.configure([__dirname], {
     autoescape: true,
     express: app
-});
+  });
 
 
 //express view engine settings
 app.engine('html', nunjucks.render);
 app.set('view engine', 'html');
-
-app.set('views', '.');
 
 app.use(
     (req, res, next) => {
