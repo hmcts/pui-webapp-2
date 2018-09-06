@@ -2,8 +2,8 @@
 	"name": "lib",
 	"version": "0.0.1",
 	"scripts": {
-		"start": "node start.js",
-		"nodemon": "cd src && nodemon server.js",
+		"start": "cd src && node server.js",
+		"nodemon" : "cd src && nodemon server.js",
 		"nuke": "rm -rf dist node_modules",
 		"postinstall": "echo post install"
 	},
