@@ -3,7 +3,6 @@ const nunjucks = require('nunjucks')
 const log4js = require('express')
 const homeController = require('./home')
 
-
 const app = express()
 const PORT = 4001
 
@@ -36,14 +35,10 @@ app.use(
     }
 )
 
-
 app.get('/', homeController.home)
 
-
-//if (require.main === module) {
 app.listen(PORT, () => {
     console.log(`listening on port ${PORT}`)
 })
-//}
 
 module.exports = app
