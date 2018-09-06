@@ -7,9 +7,19 @@ const homeController = require('./home')
 const app = express()
 const PORT = 4001
 
-nunjucks.configure([__dirname], {
+var viewDirs = [
+    __dirname,
+    'views',
+    '../node_modules/govuk-frontend/',
+    '../node_modules/govuk-frontend/components',
+    '../node_modules/@hmcts/frontend/components'
+]
+
+nunjucks.configure(viewDirs, {
     autoescape: true,
-    express: app
+    express: app,
+    noCache: true,
+    watch: true
   });
 
 

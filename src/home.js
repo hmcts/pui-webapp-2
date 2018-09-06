@@ -1,7 +1,6 @@
 
-
 module.exports.home = function(req, res) {
-    res.render("test")
+    res.render("index")
 }
 
 module.exports.innex =function(req, res) {
