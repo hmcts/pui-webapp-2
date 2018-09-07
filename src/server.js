@@ -1,8 +1,15 @@
 const express = require('express')
 const nunjucks = require('nunjucks')
 const log4js = require('express')
-const homeController = require('./home')
 
+//
+// Components
+//
+const homeComponent = require('./components/home/home.js')
+
+//
+// Express App
+//
 const app = express()
 const PORT = 4001
 
@@ -35,7 +42,7 @@ app.use(
     }
 )
 
-app.get('/', homeController.home)
+app.get('/', homeComponent.home)
 
 app.listen(PORT, () => {
     console.log(`listening on port ${PORT}`)
