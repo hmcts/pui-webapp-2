@@ -4,6 +4,7 @@
   "scripts": {
     "build": "npm run build:sass",
     "build:sass": "sass src/assets/scss/main.scss ./dist/assets/styles/main.css",
+    "lint": "eslint .",
     "start": "cd src && node server.js",
     "nodemon": "cd src && nodemon server.js",
     "nuke": "rm -rf dist node_modules",
