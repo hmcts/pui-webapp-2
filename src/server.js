@@ -1,9 +1,20 @@
 const express = require('express')
 const nunjucks = require('nunjucks')
 const log4js = require('express')
+<<<<<<< HEAD
 const path = require('path')
 const homeController = require('./home')
+=======
+>>>>>>> 338339f3cbfaa8a092de7c1a4078daaa0d752fa1
 
+//
+// Components
+//
+const homeComponent = require('./components/home/home.js')
+
+//
+// Express App
+//
 const app = express()
 const PORT = 4001
 
@@ -35,9 +46,13 @@ app.use(
     }
 )
 
+<<<<<<< HEAD
 app.use('/assets', express.static(path.join(__dirname, '../dist/assets')))
 
 app.get('/', homeController.home)
+=======
+app.get('/', homeComponent.home)
+>>>>>>> 338339f3cbfaa8a092de7c1a4078daaa0d752fa1
 
 app.listen(PORT, () => {
     console.log(`listening on port ${PORT}`)
