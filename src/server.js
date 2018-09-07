@@ -1,20 +1,9 @@
 const express = require('express')
 const nunjucks = require('nunjucks')
-const log4js = require('express')
-<<<<<<< HEAD
-const path = require('path')
-const homeController = require('./home')
-=======
->>>>>>> 338339f3cbfaa8a092de7c1a4078daaa0d752fa1
-
-//
-// Components
-//
+//const log4js = require('express')
+//const path = require('path')
 const homeComponent = require('./components/home/home.js')
 
-//
-// Express App
-//
 const app = express()
 const PORT = 4001
 
@@ -37,6 +26,8 @@ nunjucks.configure(viewDirs, {
 app.engine('html', nunjucks.render)
 app.set('view engine', 'html')
 
+app.use(express.static('../dist'))
+
 app.use(
     (req, res, next) => {
         res.setHeader('Cache-Control', 'private, no-cache, no-store, max-age=0')
@@ -46,13 +37,9 @@ app.use(
     }
 )
 
-<<<<<<< HEAD
-app.use('/assets', express.static(path.join(__dirname, '../dist/assets')))
+app.use(express.static('dist'))
 
-app.get('/', homeController.home)
-=======
 app.get('/', homeComponent.home)
->>>>>>> 338339f3cbfaa8a092de7c1a4078daaa0d752fa1
 
 app.listen(PORT, () => {
     console.log(`listening on port ${PORT}`)
