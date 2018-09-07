@@ -8,4 +8,5 @@ There are a few npm scripts that are used within the project
     "start": start express server on port 4001
     "nodemon": start express and watch for changes in code
     "nuke": Removes all node nodules and anything in the dist folder
-    "postinstall": Stub for anything that is wanted to run automatically after running npm install, like perhaps symlinking
+    "postinstall": Stub for anything that is wanted to run automatically after running npm install
+                   for example, symlinking
