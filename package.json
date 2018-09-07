@@ -2,11 +2,12 @@
   "name": "lib",
   "version": "0.0.1",
   "scripts": {
+    "build": "npm run build:sass",
+    "build:sass": "sass src/assets/scss/main.scss ./dist/assets/styles/main.css",
     "start": "cd src && node server.js",
     "nodemon": "cd src && nodemon server.js",
     "nuke": "rm -rf dist node_modules",
-    "postinstall": "echo post install",
-    "sass": "sass src/assets/scss/main.scss ./dist/assets/styles/main.css"
+    "postinstall": "echo post install"
   },
   "dependencies": {
     "@hmcts/frontend": "0.0.9-alpha",
