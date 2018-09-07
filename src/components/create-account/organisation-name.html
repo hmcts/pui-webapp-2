@@ -4,11 +4,11 @@
 
 {% block content %}
 {{govukBackLink({
-  href: '/create-account/organisation-name'
+  href: link.prevPage
 })}}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <form action="/create-account/check-organisation">
+      <form action={{link.nextPage}}>
 
         {{ govukSelect({
           id: "org-name",

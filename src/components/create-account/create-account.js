@@ -21,6 +21,7 @@ class PUICreateAccountComponent {
     installToExpress (expressApp) {
         expressApp.get(this.config.routingPrefix, this.routeCreateAccount.bind(this))
         expressApp.get(this.config.routingPrefix + '/organisation-name', this.routeOrganisationName.bind(this))
+        expressApp.get(this.config.routingPrefix + '/check-organisation', this.routeCheckOrganisationName.bind(this))
     }
 
     routeCreateAccount (req, res) {
@@ -37,10 +38,22 @@ class PUICreateAccountComponent {
         let nunjucksVariables = {
             link:
             {
-                nextPage: this.config.routingPrefix + '/organisation-name'
+                prevPage: this.config.routingPrefix,
+                nextPage: this.config.routingPrefix + '/check-organisation'
             }
         }
         res.render(path.join(__dirname, '/organisation-name'), nunjucksVariables)
+    }
+
+    routeCheckOrganisationName (req, res) {
+        let nunjucksVariables = {
+            link:
+            {
+                //prevPage: this.config.routingPrefix,
+                //nextPage: this.config.routingPrefix + '/check-organisation'
+            }
+        }
+        res.render(path.join(__dirname, '/check-organisation'), nunjucksVariables)
     }
 }
 
