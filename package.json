@@ -2,27 +2,30 @@
   "name": "lib",
   "version": "0.0.1",
   "scripts": {
-    "start": "node start.js",
+    "start": "cd src && node server.js",
     "nodemon": "cd src && nodemon server.js",
     "nuke": "rm -rf dist node_modules",
     "postinstall": "echo post install",
-    "xsass": "node-sass --importer node_modules/node-sass-glob-importer/dist/cli.js src/assets/scss/main.sxcss ./dist/assets/styles/main.css --output-style compressed",
-    "sass": "node-sass --importer node_modules/node-sass-glob ./src/assets/scss/main.scss ./dist/assets/styles/main.css --output-style compressed"
+    "sass": "sass src/assets/scss/main.scss ./dist/assets/styles/main.css"
   },
   "dependencies": {
     "@hmcts/frontend": "0.0.9-alpha",
     "express": "^4.16.3",
     "govuk-frontend": "^1.1.0",
     "govuk_template_jinja": "^0.24.1",
-    "node-sass": "^4.9.3",
-    "node-sass-glob": "^1.0.4",
     "nunjucks": "^3.1.3"
   },
   "devDependencies": {
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-register": "^6.26.0",
+    "eslint": "^5.5.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
     "log4js": "^3.0.5",
-    "node-sass-glob-importer": "^5.2.0"
+    "sass": "^1.13.2"
   }
 }

@@ -1,1 +1,58 @@
-@import "/node_modules/govuk_template_jinja/assets/stylesheets/**/*.css";
+@import "../../../node_modules/govuk_template_jinja/assets/stylesheets/govuk-template-ie6";
+@import "../../../node_modules/govuk_template_jinja/assets/stylesheets/govuk-template-ie7";
+@import "../../../node_modules/govuk_template_jinja/assets/stylesheets/govuk-template-ie8";
+@import "../../../node_modules/govuk_template_jinja/assets/stylesheets/govuk-template-print";
+@import "../../../node_modules/govuk-frontend/all";
+
+@import "pui";
+
+// JUI styles
+@import "pui/all";
+
+.js-enabled .js-hidden {
+  display: none !important;
+}
+
+mark.comment {
+  background-color: govuk-colour('orange');
+}
+
+.pui-case-action-alert {
+  background-color: govuk-colour("blue");
+  color: govuk-colour("white");
+  margin-bottom: govuk-spacing(6);
+  padding: govuk-spacing(4);
+}
+
+.pui-case-action-alert__heading {
+  color: inherit;
+  @include govuk-font(
+    $size: 24,
+    $weight: bold
+  );
+  color: inherit;
+  margin-bottom: govuk-spacing(2);
+  margin-top: 0;
+}
+
+.pui-case-action-alert__content {
+  color: inherit;
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+
+}
+
+.pui-case-action-alert__link:link,
+.pui-case-action-alert__link:visited {
+  color: govuk-colour("white");
+}
+
+.hmcts-navigation {
+  @include mq($from: desktop) {
+    position: absolute;
+    right: 0;
+    top: 12px;
+  }
+}

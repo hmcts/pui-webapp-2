@@ -1,6 +1,7 @@
 const express = require('express')
 const nunjucks = require('nunjucks')
 const log4js = require('express')
+const path = require('path')
 const homeController = require('./home')
 
 const app = express()
@@ -19,12 +20,11 @@ nunjucks.configure(viewDirs, {
     express: app,
     noCache: true,
     watch: true
-  });
-
+})
 
 //express view engine settings
-app.engine('html', nunjucks.render);
-app.set('view engine', 'html');
+app.engine('html', nunjucks.render)
+app.set('view engine', 'html')
 
 app.use(
     (req, res, next) => {
@@ -34,6 +34,8 @@ app.use(
         next()
     }
 )
+
+app.use('/assets', express.static(path.join(__dirname, '../dist/assets')))
 
 app.get('/', homeController.home)
 
