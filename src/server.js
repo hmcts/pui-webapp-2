@@ -13,8 +13,7 @@ const createAccountComponent = require('./components/create-account/create-accou
 var viewDirs = [
     __dirname,
     'components',
-    'views',
-    'views/layout/',
+    'components/layout', // because of "includes" dependency in base.html - possible improvement here ?
     '../node_modules/govuk-frontend/',
     '../node_modules/govuk-frontend/components',
     '../node_modules/@hmcts/frontend/components'
