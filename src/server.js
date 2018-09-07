@@ -1,26 +1,20 @@
 const express = require('express')
 const nunjucks = require('nunjucks')
 const log4js = require('express')
-<<<<<<< HEAD
 const path = require('path')
-const homeController = require('./home')
-=======
->>>>>>> 338339f3cbfaa8a092de7c1a4078daaa0d752fa1
 
-//
-// Components
-//
-const homeComponent = require('./components/home/home.js')
-
-//
-// Express App
-//
 const app = express()
 const PORT = 4001
 
+// Components
+const homeComponent = require('./components/home/home.js')
+const createAccountComponent = require('./components/create-account/create-account.js')
+
 var viewDirs = [
     __dirname,
+    'components',
     'views',
+    'views/layout/',
     '../node_modules/govuk-frontend/',
     '../node_modules/govuk-frontend/components',
     '../node_modules/@hmcts/frontend/components'
@@ -46,13 +40,10 @@ app.use(
     }
 )
 
-<<<<<<< HEAD
+app.get('/', homeComponent.home)
 app.use('/assets', express.static(path.join(__dirname, '../dist/assets')))
 
-app.get('/', homeController.home)
-=======
-app.get('/', homeComponent.home)
->>>>>>> 338339f3cbfaa8a092de7c1a4078daaa0d752fa1
+app.get('/create-account', createAccountComponent.createAccount)
 
 app.listen(PORT, () => {
     console.log(`listening on port ${PORT}`)
