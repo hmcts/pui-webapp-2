@@ -1,6 +1,6 @@
 const express = require('express')
 const nunjucks = require('nunjucks')
-const log4js = require('express')
+//const log4js = require('express')
 const path = require('path')
 
 const app = express()
@@ -31,6 +31,8 @@ nunjucks.configure(viewDirs, {
 app.engine('html', nunjucks.render)
 app.set('view engine', 'html')
 
+app.use(express.static('../dist'))
+
 app.use(
     (req, res, next) => {
         res.setHeader('Cache-Control', 'private, no-cache, no-store, max-age=0')
@@ -40,13 +42,15 @@ app.use(
     }
 )
 
-app.get('/', homeComponent.home)
+// static assets
+app.use(express.static('dist'))
 app.use('/assets', express.static(path.join(__dirname, '../dist/assets')))
 
+// component routes
+app.get('/', homeComponent.home)
 app.get('/create-account', createAccountComponent.createAccount)
 
+// Start !
 app.listen(PORT, () => {
     console.log(`listening on port ${PORT}`)
 })
-
-module.exports = app
