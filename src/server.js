@@ -8,7 +8,7 @@ const PORT = 4001
 
 // Components
 const homeComponent = require('./components/home/home.js')
-const createAccountComponent = require('./components/create-account/create-account.js')
+const { PUICreateAccountComponent } = require('./components/create-account/create-account.js')
 
 var viewDirs = [
     __dirname,
@@ -45,9 +45,13 @@ app.use(
 app.use(express.static('dist'))
 app.use('/assets', express.static(path.join(__dirname, '../dist/assets')))
 
-// component routes
+// components
 app.get('/', homeComponent.home)
-app.get('/create-account', createAccountComponent.createAccount)
+
+let puiCreateAccountComponent = new PUICreateAccountComponent({
+    routingPrefix: '/create-account'
+})
+puiCreateAccountComponent.installToExpress(app)
 
 // Start !
 app.listen(PORT, () => {
