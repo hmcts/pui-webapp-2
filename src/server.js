@@ -13,7 +13,7 @@ const { PUICreateAccountComponent } = require('./components/create-account/creat
 var viewDirs = [
     __dirname,
     'components',
-    'components/layout', // because of "includes" dependency in base.html - possible improvement here ?
+    'components/layouts', // because of "includes" dependency in base.html - possible improvement here ?
     '../node_modules/govuk-frontend/',
     '../node_modules/govuk-frontend/components',
     '../node_modules/@hmcts/frontend/components'
