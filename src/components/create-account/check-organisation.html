@@ -6,7 +6,7 @@
   <div class="govuk-width-container">
 
     {{govukBackLink({
-      href: '/create-account/organisation-name'
+      href: link.prevPage
     })}}
 
     <main role="main" class="govuk-main-wrapper">
@@ -14,7 +14,7 @@
 
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-          <form action="/create-account/name" method="post">
+          <form action={{link.nextPage}} method="post">
 
             <h2 class="govuk-heading-m">Organisation details</h2>
             <p>Wedlake Bell<br>71 Queen Victoria Street<br>London<br>EC4V 4AY</p>

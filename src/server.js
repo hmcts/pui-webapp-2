@@ -49,7 +49,9 @@ app.use('/assets', express.static(path.join(__dirname, '../dist/assets')))
 app.get('/', homeComponent.home)
 
 let puiCreateAccountComponent = new PUICreateAccountComponent({
-    routingPrefix: '/create-account'
+    routingPrefix: '/create-account',
+    linkToCreateCasePage: '/create-case',
+    linkToManageCasePage: '/manage-case'
 })
 puiCreateAccountComponent.installToExpress(app)
 
