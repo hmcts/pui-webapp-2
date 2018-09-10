@@ -2,6 +2,7 @@
     "extends": "standard",
     "rules": {
         "indent": 0,
-        "spaced-comment": "off"
+        "spaced-comment": "off",
+        "space-before-function-paren": "off"
     }
 }
