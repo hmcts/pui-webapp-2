@@ -31,7 +31,7 @@
 {%- from "alert/macro.njk" import puiAlert %}
 
 {% block head %}
-  {% include "includes/head.html" %}
+  {% include "layouts/includes/head.html" %}
 {% endblock %}
 
 {% block pageTitle %}
@@ -79,7 +79,7 @@
 
 {% block bodyEnd %}
   {% block scripts %}
-    {% include "includes/scripts.html" %}
+    {% include "layouts/includes/scripts.html" %}
     {% block pageScripts %}{% endblock %}
   {% endblock %}
   <!-- GOV.UK Prototype Kit {{releaseVersion}} -->

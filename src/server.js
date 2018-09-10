@@ -21,7 +21,7 @@ var config = {
 var viewDirs = [
     __dirname,
     'components',
-    'components/layouts', // because of "includes" dependency in base.html - possible improvement here ?
+    'assets/templates',
     '../node_modules/govuk-frontend/',
     '../node_modules/govuk-frontend/components',
     '../node_modules/@hmcts/frontend/components'

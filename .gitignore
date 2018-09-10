@@ -2,3 +2,5 @@
 node_modules/*
 !dist/
 dist/*
+!src/.sessions/
+src/.sessions/*
