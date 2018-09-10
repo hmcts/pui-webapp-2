@@ -6,13 +6,13 @@
 <div class="govuk-width-container">
 
     {{govukBackLink({
-      href: '/create-account/name'
+      href: link.prevPage
     })}}
 
     <main role="main" class="govuk-main-wrapper">
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-          <form action="/create-account/password">
+          <form action={{link.nextPage}}>
 
             {{ govukInput({
               label: {
