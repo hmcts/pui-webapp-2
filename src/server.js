@@ -2,6 +2,7 @@ const express = require('express')
 const nunjucks = require('nunjucks')
 //const log4js = require('express')
 const path = require('path')
+const config = require('config')
 const session = require('express-session')
 const sessionFileStore = require('session-file-store')
 
@@ -13,20 +14,6 @@ const { PUICreateIdamComponent } = require('./components/idam')
 
 const app = express()
 const PORT = 4001
-
-// Read from ENV in prod somehow?
-var config = {
-    sessionSecret: 's3cretSauc3',
-    secureCookie: false, // this needs to be 'true' in prod and needs https encryption to be used
-    idam: {
-        redirectUri: 'https://jui-webapp-aat.service.core-compute-aat.internal/oauth2/callback',
-        indexUrl: '/index',
-        idamApiUrl: 'https://preprod-idamapi.reform.hmcts.net:3511',
-        idamLoginUrl: 'http://idam.preprod.ccidam.reform.hmcts.net/login',
-        idamSecret: 'TZdHXaDbvZTfNy6U',
-        idamClientID: 'juiwebapp'
-    }
-}
 
 var viewDirs = [
     __dirname,
