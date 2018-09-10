@@ -2,13 +2,21 @@ const express = require('express')
 const nunjucks = require('nunjucks')
 //const log4js = require('express')
 const path = require('path')
-
-const app = express()
-const PORT = 4001
+const session = require('express-session')
+const sessionFileStore = require('session-file-store')
 
 // Components
 const homeComponent = require('./components/home/home.js')
 const { PUICreateAccountComponent } = require('./components/create-account/create-account.js')
+
+const app = express()
+const PORT = 4001
+
+// Read from ENV in prod somehow?
+var config = {
+    sessionSecret: 's3cretSauc3',
+    secureCookie: 'false' // this needs to be 'true' in prod and needs https encryption to be used
+}
 
 var viewDirs = [
     __dirname,
@@ -25,6 +33,26 @@ nunjucks.configure(viewDirs, {
     noCache: true,
     watch: true
 })
+
+//sessions
+const FileStore = sessionFileStore(session)
+
+app.use(
+    session({
+        cookie: {
+            httpOnly: true,
+            maxAge: 31536000,
+            secure: config.secureCookie
+        },
+        name: 'pui-webapp-2',
+        resave: true,
+        saveUninitialized: true,
+        secret: config.sessionSecret,
+        store: new FileStore({
+            path: process.env.NOW ? `/tmp/sessions` : `.sessions`
+        })
+    })
+)
 
 //express view engine settings
 app.engine('html', nunjucks.render)
