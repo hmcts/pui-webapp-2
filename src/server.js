@@ -2,7 +2,7 @@ const express = require('express')
 const nunjucks = require('nunjucks')
 //const log4js = require('express')
 const path = require('path')
-const config = require('config')
+const config = require('./config')
 const session = require('express-session')
 const sessionFileStore = require('session-file-store')
 
