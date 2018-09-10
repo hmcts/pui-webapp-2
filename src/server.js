@@ -1,6 +1,6 @@
 const express = require('express')
 const nunjucks = require('nunjucks')
-//const log4js = require('express')
+const log4js = require('log4js')
 const path = require('path')
 const config = require('./config')
 const session = require('express-session')
@@ -14,6 +14,11 @@ const { PUICreateIdamComponent } = require('./components/idam')
 
 const app = express()
 const PORT = 4001
+
+const logger = log4js.getLogger('server')
+logger.level = 'info'
+
+logger.info('Using Config:\n', config)
 
 var viewDirs = [
     __dirname,
@@ -89,5 +94,5 @@ puiCreateIdamComponent.installToExpress(app) // idam component with auth middlew
 
 // Start !
 app.listen(PORT, () => {
-    console.log(`listening on port ${PORT}`)
+    logger.info(`listening on port ${PORT}`)
 })
