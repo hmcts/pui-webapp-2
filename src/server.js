@@ -7,7 +7,9 @@ const sessionFileStore = require('session-file-store')
 
 // Components
 const homeComponent = require('./components/home/home.js')
+
 const { PUICreateAccountComponent } = require('./components/create-account/create-account.js')
+const { PUICreateIdamComponent } = require('./components/idam')
 
 const app = express()
 const PORT = 4001
@@ -15,7 +17,15 @@ const PORT = 4001
 // Read from ENV in prod somehow?
 var config = {
     sessionSecret: 's3cretSauc3',
-    secureCookie: false // this needs to be 'true' in prod and needs https encryption to be used
+    secureCookie: false, // this needs to be 'true' in prod and needs https encryption to be used
+    idam: {
+        redirectUri: 'https://jui-webapp-aat.service.core-compute-aat.internal/oauth2/callback',
+        indexUrl: '/index',
+        idamApiUrl: 'https://preprod-idamapi.reform.hmcts.net:3511',
+        idamLoginUrl: 'http://idam.preprod.ccidam.reform.hmcts.net/login',
+        idamSecret: 'TZdHXaDbvZTfNy6U',
+        idamClientID: 'juiwebapp'
+    }
 }
 
 var viewDirs = [
@@ -81,7 +91,14 @@ let puiCreateAccountComponent = new PUICreateAccountComponent({
     linkToCreateCasePage: '/create-case',
     linkToManageCasePage: '/manage-case'
 })
+
+let puiCreateIdamComponent = new PUICreateIdamComponent({
+    routingPrefix: '/idam',
+    idam: config.idam
+})
+
 puiCreateAccountComponent.installToExpress(app)
+puiCreateIdamComponent.installToExpress(app) // idam component with auth middleware should be before other components
 
 // Start !
 app.listen(PORT, () => {
