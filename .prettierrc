@@ -1,11 +1,12 @@
 {
-  "semi": false,
-  "printWidth": 100,
-  "singleQuote": true,
-  "overrides": [
-    {
-      "files": [".prettierrc", "package,json"],
-      "options": { "parser": "json" }
-    }
-  ]
+    "semi": false,
+    "printWidth": 120,
+    "singleQuote": true,
+    "tabWidth": 4,
+    "overrides": [
+        {
+            "files": [".prettierrc", "package,json"],
+            "options": { "parser": "json" }
+        }
+    ]
 }
