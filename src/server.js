@@ -5,6 +5,15 @@ const path = require('path')
 const config = require('./config')
 const session = require('express-session')
 const sessionFileStore = require('session-file-store')
+// need this for idam cookie setting/reading
+const cookieParser = require('cookie-parser')
+
+// we need this as idam tries to get  to somewhere behind a proxy
+// nb. global-tunnel is depricated and broken, that was fun ... Global-tunnel-ng is a newer fork
+require('global-tunnel-ng').initialize({
+    host: '172.16.0.7',
+    port: 8080
+})
 
 // Components
 const homeComponent = require('./components/home/home.js')
@@ -56,6 +65,8 @@ app.use(
     })
 )
 
+app.use(cookieParser())
+
 //express view engine settings
 app.engine('html', nunjucks.render)
 app.set('view engine', 'html')
@@ -75,9 +86,6 @@ app.use('/assets', express.static(path.join(__dirname, '../dist/assets')))
 app.use('/assets', express.static(path.join(__dirname, '../node_modules', 'govuk-frontend', 'assets')))
 app.use('/assets', express.static(path.join(__dirname, '../node_modules', '@hmcts', 'frontend', 'assets')))
 
-// components
-app.get('/', homeComponent.home)
-
 let puiCreateAccountComponent = new PUICreateAccountComponent({
     routingPrefix: '/create-account',
     linkToCreateCasePage: '/create-case',
@@ -89,8 +97,12 @@ let puiCreateIdamComponent = new PUICreateIdamComponent({
     idam: config.idam
 })
 
-puiCreateAccountComponent.installToExpress(app)
 puiCreateIdamComponent.installToExpress(app) // idam component with auth middleware should be before other components
+
+puiCreateAccountComponent.installToExpress(app)
+
+// components
+app.get('/', homeComponent.home)
 
 // Start !
 app.listen(PORT, () => {

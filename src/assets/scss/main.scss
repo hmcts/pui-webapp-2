@@ -3,10 +3,11 @@
 @import "../../../node_modules/govuk_template_jinja/assets/stylesheets/govuk-template-ie8";
 @import "../../../node_modules/govuk-frontend/all";
 
-@import "pui";
-
 // JUI styles
 @import "pui/all";
+
+// templates
+@import "../templates/all";
 
 .js-enabled .js-hidden {
   display: none !important;

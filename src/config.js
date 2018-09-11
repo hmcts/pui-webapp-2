@@ -7,7 +7,8 @@ var config = {
         idamApiUrl: 'https://preprod-idamapi.reform.hmcts.net:3511',
         idamLoginUrl: 'http://idam.preprod.ccidam.reform.hmcts.net/login',
         idamSecret: 'TZdHXaDbvZTfNy6U',
-        idamClientID: 'juiwebapp'
+        idamClientID: 'juiwebapp',
+        redirectUri: 'http://localhost:4001/oauth2/callback'
     }
 }
 
