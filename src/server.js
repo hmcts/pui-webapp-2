@@ -97,12 +97,17 @@ let puiCreateIdamComponent = new PUICreateIdamComponent({
     idam: config.idam
 })
 
+// start insecure routes
+// Routes that do not require authentication
+app.get('/', homeComponent.home)
+// End insecure routes
+// components
 puiCreateIdamComponent.installToExpress(app) // idam component with auth middleware should be before other components
-
 puiCreateAccountComponent.installToExpress(app)
 
-// components
-app.get('/', homeComponent.home)
+// start secure routes
+
+// end secure routes
 
 // Start !
 app.listen(PORT, () => {
