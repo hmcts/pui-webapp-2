@@ -52,18 +52,31 @@ class AbstractComponentState {
 class RenderSimpleViewState extends AbstractComponentState {
     processDataSubmit() {}
 
-    render() {
-        let nunjucksVariables = {
-            link: {
-                nextPage: this.config.component.convertMetaRouteToRoute('$/organisation-name')
-            }
+    convertMetaRoutesToPlainRoutes(linksIn) {
+        let rv = {}
+        for (let key in linksIn)
+        {
+            rv[key] = this.config.component.convertMetaRouteToRoute(linksIn[key])
         }
-        this.res.render(this.config.stateMeta.nunjucks.renderFile, nunjucksVariables);
+        return rv
+    }
+
+    prepareNunjucksVariables() {
+        let nunjucksVariables = {}
+        if (this.config.stateMeta.nunjucks) {
+            nunjucksVariables.link = this.convertMetaRoutesToPlainRoutes(this.config.stateMeta.nunjucks.link)
+        }
+        return nunjucksVariables
+    }
+
+    render() {
+        this.res.render(this.config.stateMeta.nunjucks.renderFile, this.prepareNunjucksVariables())
     }
 }
 
-class YourName extends AbstractComponentState {
+class YourName extends RenderSimpleViewState {
     processDataSubmit() {
+        console.log('processDataSubmit')
         this.importFormData()
 
         let formAccepted = false
@@ -90,27 +103,21 @@ class YourName extends AbstractComponentState {
 
     render() {
         this.importFormData()
-        let nunjucksVariables = {
-            formData: this.formData,
-            link: {
-                prevPage: this.config.routingPrefix + '/check-organisation',
-                nextPage: this.config.routingPrefix + '/email'
-            }
-        }
+        let nunjucksVariables = this.prepareNunjucksVariables()
+        nunjucksVariables.formData = this.formData
         this.res.render(path.join(__dirname, '/name'), nunjucksVariables)
     }
 }
 
-class YourEmailComponentState extends AbstractComponentState {
+class ConfirmationState extends RenderSimpleViewState {
     render() {
         this.importFormData()
-        let nunjucksVariables = {
-            link: {
-                prevPage: this.config.routingPrefix + '/name',
-                nextPage: this.config.routingPrefix + '/password'
-            }
+        let nunjucksVariables = this.prepareNunjucksVariables()
+        nunjucksVariables.link = {
+            createCasePage: this.config.componentConfig.linkToCreateCasePage,
+            manageCasePage: this.config.componentConfig.linkToManageCasePage
         }
-        this.res.render(path.join(__dirname, '/email'), nunjucksVariables)
+        this.res.render(path.join(__dirname, '/confirmation'), nunjucksVariables)
     }
 }
 
@@ -119,14 +126,72 @@ const PUICreateAccountComponentDefaultConfig = {
         'home': {
             HandlerClass: RenderSimpleViewState,
             nunjucks: {
-                renderFile: path.join(__dirname, '/index')
+                renderFile: path.join(__dirname, '/index'),
+                link: {
+                    nextPage: '$/organisation-name'
+                }
             }
         },
         'organisation-name': {
-            HandlerClass: YourName
+            HandlerClass: RenderSimpleViewState,
+            nunjucks: {
+                renderFile: path.join(__dirname, '/organisation-name'),
+                link: {
+                    prevPage: '$',
+                    nextPage: '$/check-organisation'
+                }
+            }
         },
         'check-organisation': {
-            HandlerClass: YourName
+            HandlerClass: RenderSimpleViewState,
+            nunjucks: {
+                renderFile: path.join(__dirname, '/check-organisation'),
+                link: {
+                    prevPage: '$/organisation-name',
+                    nextPage: '$/name'
+                }
+            }
+        },
+        'name': {
+            HandlerClass: YourName,
+            nunjucks: {
+                link: {
+                    prevPage: '$/check-organisation',
+                    nextPage: '$/email'
+                }
+            }
+        },
+        'email': {
+            HandlerClass: RenderSimpleViewState,
+            nunjucks: {
+                renderFile: path.join(__dirname, '/email'),
+                link: {
+                    prevPage: '$/name',
+                    nextPage: '$/password'
+                }
+            }
+        },
+        'password': {
+            HandlerClass: RenderSimpleViewState,
+            nunjucks: {
+                renderFile: path.join(__dirname, '/password'),
+                link: {
+                    prevPage: '$/email',
+                    nextPage: '$/check'
+                }
+            }
+        },
+        'check': {
+            HandlerClass: RenderSimpleViewState,
+            nunjucks: {
+                renderFile: path.join(__dirname, '/check'),
+                link: {
+                    nextPage: '$/confirmation'
+                }
+            }
+        },
+        'confirmation': {
+            HandlerClass: ConfirmationState
         }
     }
 }
@@ -183,62 +248,13 @@ class PUICreateAccountComponent {
         this.addRenderRoute('$', 'get', 'home', 'render')
         this.addRenderRoute('$/organisation-name', 'get', 'organisation-name', 'render')
         this.addRenderRoute('$/check-organisation', 'get', 'check-organisation', 'render')
-        this.addRenderRoute('$/name', 'post', 'check-organisation', 'processDataSubmit')
+        this.addRenderRoute('$/name', 'post', 'name', 'render')
         this.addRenderRoute('$/name', 'get', 'name', 'render')
         this.addRenderRoute('$/email', 'get', 'name', 'processDataSubmit')
         this.addRenderRoute('$/email', 'get', 'email', 'render')
-        this.addRenderRoute('$/password', 'get', '', 'render')
-        this.addRenderRoute('$/check', 'get', '', 'render')
-        this.addRenderRoute('$/confirmation', 'get', '', 'render')
-    }
-
-    routeOrganisationName(req, res) {
-        let nunjucksVariables = {
-            link: {
-                prevPage: this.config.routingPrefix,
-                nextPage: this.config.routingPrefix + '/check-organisation'
-            }
-        }
-        res.render(path.join(__dirname, '/organisation-name'), nunjucksVariables)
-    }
-
-    routeCheckOrganisationName(req, res) {
-        let nunjucksVariables = {
-            link: {
-                prevPage: this.config.routingPrefix + '/organisation-name',
-                nextPage: this.config.routingPrefix + '/name'
-            }
-        }
-        res.render(path.join(__dirname, '/check-organisation'), nunjucksVariables)
-    }
-
-    routeYourPassword(req, res) {
-        let nunjucksVariables = {
-            link: {
-                prevPage: this.config.routingPrefix + '/email',
-                nextPage: this.config.routingPrefix + '/check'
-            }
-        }
-        res.render(path.join(__dirname, '/password'), nunjucksVariables)
-    }
-
-    routeCheckYourAnswers(req, res) {
-        let nunjucksVariables = {
-            link: {
-                nextPage: this.config.routingPrefix + '/confirmation'
-            }
-        }
-        res.render(path.join(__dirname, '/check'), nunjucksVariables)
-    }
-
-    routeAcceptAndSend(req, res) {
-        let nunjucksVariables = {
-            link: {
-                createCasePage: this.config.linkToCreateCasePage,
-                manageCasePage: this.config.linkToManageCasePage
-            }
-        }
-        res.render(path.join(__dirname, '/confirmation'), nunjucksVariables)
+        this.addRenderRoute('$/password', 'get', 'password', 'render')
+        this.addRenderRoute('$/check', 'get', 'check', 'render')
+        this.addRenderRoute('$/confirmation', 'get', 'confirmation', 'render')
     }
 }
 
