@@ -49,8 +49,34 @@ class AbstractComponentState {
     }
 }
 
-class YourNameComponentState extends AbstractComponentState {
+class RenderSimpleViewState extends AbstractComponentState {
+    processDataSubmit() {}
+
+    convertMetaRoutesToPlainRoutes(linksIn) {
+        let rv = {}
+        for (let key in linksIn)
+        {
+            rv[key] = this.config.component.convertMetaRouteToRoute(linksIn[key])
+        }
+        return rv
+    }
+
+    prepareNunjucksVariables() {
+        let nunjucksVariables = {}
+        if (this.config.stateMeta.nunjucks) {
+            nunjucksVariables.link = this.convertMetaRoutesToPlainRoutes(this.config.stateMeta.nunjucks.link)
+        }
+        return nunjucksVariables
+    }
+
+    render() {
+        this.res.render(this.config.stateMeta.nunjucks.renderFile, this.prepareNunjucksVariables())
+    }
+}
+
+class YourName extends RenderSimpleViewState {
     processDataSubmit() {
+        console.log('processDataSubmit')
         this.importFormData()
 
         let formAccepted = false
@@ -75,29 +101,98 @@ class YourNameComponentState extends AbstractComponentState {
         }
     }
 
-    renderState() {
+    render() {
         this.importFormData()
-        let nunjucksVariables = {
-            formData: this.formData,
-            link: {
-                prevPage: this.config.routingPrefix + '/check-organisation',
-                nextPage: this.config.routingPrefix + '/email'
-            }
-        }
+        let nunjucksVariables = this.prepareNunjucksVariables()
+        nunjucksVariables.formData = this.formData
         this.res.render(path.join(__dirname, '/name'), nunjucksVariables)
     }
 }
 
-class YourEmailComponentState extends AbstractComponentState {
-    renderState() {
+class ConfirmationState extends RenderSimpleViewState {
+    render() {
         this.importFormData()
-        let nunjucksVariables = {
-            link: {
-                prevPage: this.config.routingPrefix + '/name',
-                nextPage: this.config.routingPrefix + '/password'
-            }
+        let nunjucksVariables = this.prepareNunjucksVariables()
+        nunjucksVariables.link = {
+            createCasePage: this.config.componentConfig.linkToCreateCasePage,
+            manageCasePage: this.config.componentConfig.linkToManageCasePage
         }
-        this.res.render(path.join(__dirname, '/email'), nunjucksVariables)
+        this.res.render(path.join(__dirname, '/confirmation'), nunjucksVariables)
+    }
+}
+
+const PUICreateAccountComponentDefaultConfig = {
+    states: {
+        'home': {
+            HandlerClass: RenderSimpleViewState,
+            nunjucks: {
+                renderFile: path.join(__dirname, '/index'),
+                link: {
+                    nextPage: '$/organisation-name'
+                }
+            }
+        },
+        'organisation-name': {
+            HandlerClass: RenderSimpleViewState,
+            nunjucks: {
+                renderFile: path.join(__dirname, '/organisation-name'),
+                link: {
+                    prevPage: '$',
+                    nextPage: '$/check-organisation'
+                }
+            }
+        },
+        'check-organisation': {
+            HandlerClass: RenderSimpleViewState,
+            nunjucks: {
+                renderFile: path.join(__dirname, '/check-organisation'),
+                link: {
+                    prevPage: '$/organisation-name',
+                    nextPage: '$/name'
+                }
+            }
+        },
+        'name': {
+            HandlerClass: YourName,
+            nunjucks: {
+                link: {
+                    prevPage: '$/check-organisation',
+                    nextPage: '$/email'
+                }
+            }
+        },
+        'email': {
+            HandlerClass: RenderSimpleViewState,
+            nunjucks: {
+                renderFile: path.join(__dirname, '/email'),
+                link: {
+                    prevPage: '$/name',
+                    nextPage: '$/password'
+                }
+            }
+        },
+        'password': {
+            HandlerClass: RenderSimpleViewState,
+            nunjucks: {
+                renderFile: path.join(__dirname, '/password'),
+                link: {
+                    prevPage: '$/email',
+                    nextPage: '$/check'
+                }
+            }
+        },
+        'check': {
+            HandlerClass: RenderSimpleViewState,
+            nunjucks: {
+                renderFile: path.join(__dirname, '/check'),
+                link: {
+                    nextPage: '$/confirmation'
+                }
+            }
+        },
+        'confirmation': {
+            HandlerClass: ConfirmationState
+        }
     }
 }
 
@@ -118,93 +213,48 @@ class PUICreateAccountComponent {
         config.should.have.property('linkToCreateCasePage').which.is.a.String()
         config.should.have.property('linkToManageCasePage').which.is.a.String()
 
-        this.config = config
+        this.config = Object.assign({}, PUICreateAccountComponentDefaultConfig, config)
         this.config.routingPrefix = this.config.routingPrefix
     }
 
-    routeRender(StateClass, req, res, next) {
-        console.log(StateClass)
-        let state = new StateClass(req, res, next, this.config)
-        state.renderState()
+    convertMetaRouteToRoute(metaRoute) {
+        let rv = metaRoute
+        if (metaRoute.indexOf('$') === 0) {
+            rv = this.config.routingPrefix + metaRoute.substring(1)
+        }
+        return rv
     }
 
-    routeDataSubmit(StateClass, req, res, next) {
-        console.log(StateClass)
-        let state = new StateClass(req, res, next, this.config)
-        state.processDataSubmit()
+    addRenderRoute(metaPath, httpVerb, stateHandlerId, stateHandlerMethod) {
+        const path = this.convertMetaRouteToRoute(metaPath)
+        this.expressApp[httpVerb](path, (req, res, next) => {
+            const stateMeta = this.config.states[stateHandlerId]
+            if (stateMeta) {
+                let config = {}
+                config.stateMeta = stateMeta
+                config.component = this
+                config.componentConfig = this.config
+                let state = new stateMeta.HandlerClass(req, res, next, config)
+                state[stateHandlerMethod]()
+            } else {
+                console.log('state meta [id:', stateHandlerId, '] not found')
+                next()
+            }
+        })
     }
 
     installToExpress(expressApp) {
-        expressApp.get(this.config.routingPrefix, this.routeCreateAccount.bind(this))
-        expressApp.get(this.config.routingPrefix + '/organisation-name', this.routeOrganisationName.bind(this))
-        expressApp.get(this.config.routingPrefix + '/check-organisation', this.routeCheckOrganisationName.bind(this))
-        expressApp.post(this.config.routingPrefix + '/name', this.routeRender.bind(this, YourNameComponentState)) // TODO: handle /check-organisation POSTed data
-
-        expressApp.get(this.config.routingPrefix + '/name', this.routeRender.bind(this, YourNameComponentState))
-        expressApp.get(this.config.routingPrefix + '/email', this.routeDataSubmit.bind(this, YourNameComponentState))
-
-        expressApp.get(this.config.routingPrefix + '/email', this.routeRender.bind(this, YourEmailComponentState))
-        expressApp.get(this.config.routingPrefix + '/password', this.routeYourPassword.bind(this))
-        expressApp.get(this.config.routingPrefix + '/check', this.routeCheckYourAnswers.bind(this))
-        expressApp.get(this.config.routingPrefix + '/confirmation', this.routeAcceptAndSend.bind(this))
-    }
-
-    routeCreateAccount(req, res) {
-        let nunjucksVariables = {
-            link: {
-                nextPage: this.config.routingPrefix + '/organisation-name'
-            }
-        }
-        res.render(path.join(__dirname, '/index'), nunjucksVariables)
-    }
-
-    routeOrganisationName(req, res) {
-        let nunjucksVariables = {
-            link: {
-                prevPage: this.config.routingPrefix,
-                nextPage: this.config.routingPrefix + '/check-organisation'
-            }
-        }
-        res.render(path.join(__dirname, '/organisation-name'), nunjucksVariables)
-    }
-
-    routeCheckOrganisationName(req, res) {
-        let nunjucksVariables = {
-            link: {
-                prevPage: this.config.routingPrefix + '/organisation-name',
-                nextPage: this.config.routingPrefix + '/name'
-            }
-        }
-        res.render(path.join(__dirname, '/check-organisation'), nunjucksVariables)
-    }
-
-    routeYourPassword(req, res) {
-        let nunjucksVariables = {
-            link: {
-                prevPage: this.config.routingPrefix + '/email',
-                nextPage: this.config.routingPrefix + '/check'
-            }
-        }
-        res.render(path.join(__dirname, '/password'), nunjucksVariables)
-    }
-
-    routeCheckYourAnswers(req, res) {
-        let nunjucksVariables = {
-            link: {
-                nextPage: this.config.routingPrefix + '/confirmation'
-            }
-        }
-        res.render(path.join(__dirname, '/check'), nunjucksVariables)
-    }
-
-    routeAcceptAndSend(req, res) {
-        let nunjucksVariables = {
-            link: {
-                createCasePage: this.config.linkToCreateCasePage,
-                manageCasePage: this.config.linkToManageCasePage
-            }
-        }
-        res.render(path.join(__dirname, '/confirmation'), nunjucksVariables)
+        this.expressApp = expressApp
+        this.addRenderRoute('$', 'get', 'home', 'render')
+        this.addRenderRoute('$/organisation-name', 'get', 'organisation-name', 'render')
+        this.addRenderRoute('$/check-organisation', 'get', 'check-organisation', 'render')
+        this.addRenderRoute('$/name', 'post', 'name', 'render')
+        this.addRenderRoute('$/name', 'get', 'name', 'render')
+        this.addRenderRoute('$/email', 'get', 'name', 'processDataSubmit')
+        this.addRenderRoute('$/email', 'get', 'email', 'render')
+        this.addRenderRoute('$/password', 'get', 'password', 'render')
+        this.addRenderRoute('$/check', 'get', 'check', 'render')
+        this.addRenderRoute('$/confirmation', 'get', 'confirmation', 'render')
     }
 }
 
