@@ -16,7 +16,7 @@ require('global-tunnel-ng').initialize({
 })
 
 // Components
-const homeComponent = require('./components/home/home.js')
+const homeComponent = require('./ui/home/home.js')
 
 const { PUICreateAccountComponent } = require('./components/create-account/create-account.js')
 const { PUICreateIdamComponent } = require('./components/idam')

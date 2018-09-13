@@ -13,7 +13,7 @@ var config = {
     proxy: {
         host: '172.16.0.7',
         port: 8080
-    }
+    },
     core: {
         components: {
             "idam" : "PUICreateIdamComponent"
