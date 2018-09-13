@@ -7,6 +7,7 @@ const session = require('express-session')
 const sessionFileStore = require('session-file-store')
 // need this for idam cookie setting/reading
 const cookieParser = require('cookie-parser')
+const coreInstance = require('./core')
 
 // we need this as idam tries to get  to somewhere behind a proxy
 // nb. global-tunnel is depricated and broken, that was fun ... Global-tunnel-ng is a newer fork
@@ -16,7 +17,7 @@ require('global-tunnel-ng').initialize({
 })
 
 // Components
-const homeComponent = require('./components/home/home.js')
+const homeComponent = require('./ui/home/home.js')
 
 const { PUICreateAccountComponent } = require('./components/create-account/create-account.js')
 const { PUICreateIdamComponent } = require('./components/idam')
@@ -86,28 +87,10 @@ app.use('/assets', express.static(path.join(__dirname, '../dist/assets')))
 app.use('/assets', express.static(path.join(__dirname, '../node_modules', 'govuk-frontend', 'assets')))
 app.use('/assets', express.static(path.join(__dirname, '../node_modules', '@hmcts', 'frontend', 'assets')))
 
-let puiCreateAccountComponent = new PUICreateAccountComponent({
-    routingPrefix: '/create-account',
-    linkToCreateCasePage: '/create-case',
-    linkToManageCasePage: '/manage-case'
-})
+const core = new coreInstance(config)
+core.init(app)
 
-let puiCreateIdamComponent = new PUICreateIdamComponent({
-    routingPrefix: '/idam',
-    idam: config.idam
-})
-
-// start insecure routes
-// Routes that do not require authentication
 app.get('/', homeComponent.home)
-// End insecure routes
-// components
-puiCreateIdamComponent.installToExpress(app) // idam component with auth middleware should be before other components
-puiCreateAccountComponent.installToExpress(app)
-
-// start secure routes
-
-// end secure routes
 
 // Start !
 app.listen(PORT, () => {

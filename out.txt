@@ -1,0 +1,13 @@
+
+> lib@0.0.1 start /home/alan/Cloud/workspaces/HMCTS/pui-webapp-2
+> cd src && node server.js
+
+[32m[2018-09-13T17:19:52.947] [INFO] server - [39mUsing Config:
+ { sessionSecret: 's3cretSauc3',
+  secureCookie: false,
+  proxy: { host: '172.16.0.7', port: 8080 },
+  core: { components: [ [Object], [Object] ] } }
+[32m[2018-09-13T17:19:52.984] [INFO] core - [39mInstigating  PUICreateIdamComponent
+[32m[2018-09-13T17:19:52.984] [INFO] idam - [39mAdding Idam to express
+[32m[2018-09-13T17:19:52.985] [INFO] core - [39mInstigating  PUICreateAccountComponent
+[32m[2018-09-13T17:19:52.990] [INFO] server - [39mlistening on port 4001
