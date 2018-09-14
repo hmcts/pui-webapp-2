@@ -70,7 +70,7 @@ class PUICreateIdamComponent {
     }
 
     isAuthorised(req, res) {
-        console.log(res)
+        console.log(res.cookies)
         if (req.idam) {
             return true
         } else {

@@ -7,7 +7,7 @@ var config = {
         port: 8080
     },
     core: {
-        componentDir: './componentDir',
+        componentDir: './components/',
         components: [
             {
                 idam: {
