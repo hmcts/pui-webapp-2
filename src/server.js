@@ -7,7 +7,7 @@ const session = require('express-session')
 const sessionFileStore = require('session-file-store')
 // need this for idam cookie setting/reading
 const cookieParser = require('cookie-parser')
-const coreInstance = require('./core')
+const CoreInstance = require('./core')
 
 // we need this as idam tries to get  to somewhere behind a proxy
 // nb. global-tunnel is depricated and broken, that was fun ... Global-tunnel-ng is a newer fork
@@ -18,9 +18,6 @@ require('global-tunnel-ng').initialize({
 
 // Components
 const homeComponent = require('./ui/home/home.js')
-
-const { PUICreateAccountComponent } = require('./components/create-account/create-account.js')
-const { PUICreateIdamComponent } = require('./components/idam')
 
 const app = express()
 const PORT = 4001
@@ -87,7 +84,7 @@ app.use('/assets', express.static(path.join(__dirname, '../dist/assets')))
 app.use('/assets', express.static(path.join(__dirname, '../node_modules', 'govuk-frontend', 'assets')))
 app.use('/assets', express.static(path.join(__dirname, '../node_modules', '@hmcts', 'frontend', 'assets')))
 
-const core = new coreInstance(config)
+const core = new CoreInstance(config)
 core.init(app)
 
 app.get('/', homeComponent.home)
