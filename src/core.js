@@ -19,8 +19,8 @@ class core {
             const requireFile = component[componentKey].file
                 ? './components/' + normalisedKey + '/' + component[componentKey].file
                 : './components/' + normalisedKey
-            const componentRequire = require(requireFile)[component[componentKey].class]
-            componentSlot = new componentRequire(component[componentKey].config)
+            const ComponentRequire = require(requireFile)[component[componentKey].class]
+            componentSlot = new ComponentRequire(component[componentKey].config)
             this.componentStack[Object.keys(component)[0]] = componentSlot
             componentSlot.installToExpress(app)
         })
