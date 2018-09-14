@@ -11,10 +11,12 @@ const CoreInstance = require('./core')
 
 // we need this as idam tries to get  to somewhere behind a proxy
 // nb. global-tunnel is depricated and broken, that was fun ... Global-tunnel-ng is a newer fork
-require('global-tunnel-ng').initialize({
-    host: '172.16.0.7',
-    port: 8080
-})
+if (config.proxy) {
+    require('global-tunnel-ng').initialize({
+        host: config.proxy.host,
+        port: config.proxy.port
+    })
+}
 
 // Components
 const homeComponent = require('./ui/home/home.js')
